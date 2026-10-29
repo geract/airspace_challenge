@@ -1,0 +1,31 @@
+<style>
+  .dash { font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+  .dash table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+  .dash th, .dash td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid #ddd; }
+  .dash th { font-size: .8rem; text-transform: uppercase; color: #666; }
+</style>
+
+<div class="dash">
+  <h1>Ops dashboard · <%= @date.to_fs(:long) %></h1>
+
+  <h2>Due today (<%= @shipments.size %>)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Ref</th><th>Consignee</th><th>Flight</th><th>Flight ETA</th><th>Deliver by</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @shipments.each do |shipment| %>
+        <tr>
+          <td><%= shipment.reference %></td>
+          <td><%= shipment.consignee %></td>
+          <td><%= shipment.flight.number %> (<%= shipment.flight.status %>)</td>
+          <td><%= local_time(shipment.flight.current_eta, shipment.destination_time_zone) %></td>
+          <td><%= local_time(shipment.deliver_by, shipment.destination_time_zone) %></td>
+          <td><%= shipment.status %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
