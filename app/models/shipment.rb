@@ -20,6 +20,15 @@ class Shipment < ApplicationRecord
     eta && eta + last_mile_minutes.minutes
   end
 
+  def at_risk?
+    flight.cancelled? || projected_delivery_at > deliver_by
+  end
+
+  # Nil when the flight is cancelled: there is no ETA to measure against.
+  def minutes_late
+    projected_delivery_at && ((projected_delivery_at - deliver_by) / 60).ceil
+  end
+
   private
 
   def destination_time_zone_is_known
