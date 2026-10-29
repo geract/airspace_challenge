@@ -8,7 +8,28 @@
 <div class="dash">
   <h1>Ops dashboard · <%= @date.to_fs(:long) %></h1>
 
-  <h2>Due today (<%= @shipments.size %>)</h2>
+  <h2>At risk (<%= @at_risk.size %>)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Ref</th><th>Consignee</th><th>Flight</th><th>Deliver by</th><th>Projected delivery</th><th>Late by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @at_risk.each do |shipment| %>
+        <tr>
+          <td><%= shipment.reference %></td>
+          <td><%= shipment.consignee %></td>
+          <td><%= shipment.flight.number %> (<%= shipment.flight.status %>)</td>
+          <td><%= local_time(shipment.deliver_by, shipment.destination_time_zone) %></td>
+          <td><%= local_time(shipment.projected_delivery_at, shipment.destination_time_zone) %></td>
+          <td><%= shipment.minutes_late ? "#{shipment.minutes_late} min" : "flight cancelled" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2>Due today (<%= @on_track.size %>)</h2>
   <table>
     <thead>
       <tr>
@@ -16,7 +37,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @shipments.each do |shipment| %>
+      <% @on_track.each do |shipment| %>
         <tr>
           <td><%= shipment.reference %></td>
           <td><%= shipment.consignee %></td>
